@@ -4,7 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Booking System</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .menu {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+        }
+        .menu a {
+            color: white;
+            margin: 10px;
+            text-decoration: none;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
