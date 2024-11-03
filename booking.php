@@ -1,14 +1,9 @@
-<?php include "../inc/dbinfo.inc"; session_start(); ?>
+<?php include "../inc/dbinfo.inc"; ?>
 <html>
 <head>
     <title>订票</title>
     <link rel="stylesheet" href="styles.css">
     </style>
-    <script>
-        function showAlert() {
-            alert("订票成功！");
-        }
-    </script>
 </head>
 <body>
 
@@ -16,38 +11,31 @@
 
 <!-- 菜单 -->
 <div class="menu">
-    <a href="index.php">首頁</a>
-    <a href="ticket_query.php">訂票查詢</a>
-    <a href="member_login.php">會員登入</a>
-    <a href="member_modify.php">會員修改</a>
-    <a href="booking.php">訂票
-    </a>
+    <a href="index.php">首页</a>
+    <a href="ticket_query.php">票查询</a>
+    <a href="member_login.php">会员登录</a>
+    <a href="member_modify.php">会员修改</a>
+    <a href="booking.php">订票</a>
 </div>
 
 <?php
-  /*連接mysql*/
+  /* 连接到 MySQL 并选择数据库. */
   $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
 
   if (mysqli_connect_errno()) echo "连接 MySQL 失败: " . mysqli_connect_error();
 
   $database = mysqli_select_db($connection, DB_DATABASE);
 
-  /* 確保booking表. */
+  /* 确保 BOOKINGS 表存在. */
   VerifyBookingsTable($connection, DB_DATABASE);
 
-  /* 添加booking表. */
+  /* 如果输入字段被填充，则将一行添加到 BOOKINGS 表. */
   $customer_name = htmlentities($_POST['NAME']);
-  $customer_phone = htmlentities($_POST['PHONE']);
   $customer_address = htmlentities($_POST['ADDRESS']);
-  $customer_email = htmlentities($_POST['EMAIL']);
 
-  if (!empty($customer_name) || !empty($customer_phone) || !empty($customer_address) || !empty($customer_email)) {
-    AddBooking($connection, $customer_name, $customer_phone, $customer_address, $customer_email);
-    echo "<script>showAlert();</script>"; // 弹出订票成功提示
-    // 重定向到当前页面以刷新数据
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
-}
+  if (strlen($customer_name) || strlen($customer_address)) {
+    AddBooking($connection, $customer_name, $customer_address);
+  }
 ?>
 
 <div class="form-container">
@@ -55,28 +43,20 @@
         <label for="name">姓名:</label>
         <input type="text" name="NAME" required maxlength="45">
         <br><br>
-        <label for="phone">電話號碼:</label>
-        <input type="text" name="PHONE" required maxlength="15">
-        <br><br>
         <label for="address">地址:</label>
         <input type="text" name="ADDRESS" required maxlength="90">
         <br><br>
-        <label for="email">電子郵件:</label>
-        <input type="email" name="EMAIL" required maxlength="100">
-        <br><br>
-        <input type="submit" value="訂票" onclick="showAlert()">
+        <input type="submit" value="订票">
     </form>
 </div>
 
-<!-- 顯示預定訊息 -->
-<h2>已預訂的帳數</h2>
+<!-- 显示已预订的票务信息 -->
+<h2>已预订的票务</h2>
 <table>
     <tr>
         <th>ID</th>
         <th>姓名</th>
-        <th>電話號碼</th>
         <th>地址</th>
-        <th>電子郵件</th>
     </tr>
 
 <?php
@@ -86,9 +66,7 @@ while($query_data = mysqli_fetch_row($result)) {
     echo "<tr>";
     echo "<td>", $query_data[0], "</td>",
          "<td>", $query_data[1], "</td>",
-         "<td>", $query_data[2], "</td>",
-         "<td>", $query_data[3], "</td>",
-         "<td>", $query_data[4], "</td>";
+         "<td>", $query_data[2], "</td>";
     echo "</tr>";
 }
 ?>
@@ -106,37 +84,30 @@ while($query_data = mysqli_fetch_row($result)) {
 
 <?php
 
-/* 向表中添加. */
-function AddBooking($connection, $name, $phone, $address, $email) {
+/* 向表中添加预订. */
+function AddBooking($connection, $name, $address) {
     $n = mysqli_real_escape_string($connection, $name);
-    $p = mysqli_real_escape_string($connection, $phone);
     $a = mysqli_real_escape_string($connection, $address);
-    $e = mysqli_real_escape_string($connection, $email);
 
-    $query = "INSERT INTO BOOKINGS (NAME, PHONE, ADDRESS, EMAIL) VALUES ('$n', '$p', '$a', '$e');";
+    $query = "INSERT INTO BOOKINGS (NAME, ADDRESS) VALUES ('$n', '$a');";
 
-    if (!mysqli_query($connection, $query)) {
-        echo "<p>ERROR: " . mysqli_error($connection) . "</p>";
-    }
+    if(!mysqli_query($connection, $query)) echo("<p>添加预订数据时出错.</p>");
 }
 
-
-/* 檢查TABLE. */
+/* 检查 BOOKINGS 表是否存在，如不存在则创建它. */
 function VerifyBookingsTable($connection, $dbName) {
     if(!TableExists("BOOKINGS", $connection, $dbName)) {
         $query = "CREATE TABLE BOOKINGS (
             ID int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             NAME VARCHAR(45),
-            PHONE VARCHAR(15),
-            ADDRESS VARCHAR(90),
-            EMAIL VARCHAR(100)
+            ADDRESS VARCHAR(90)
         )";
 
         if(!mysqli_query($connection, $query)) echo("<p>创建表时出错.</p>");
     }
 }
 
-/* 表是否存在. */
+/* 检查表是否存在. */
 function TableExists($tableName, $connection, $dbName) {
     $t = mysqli_real_escape_string($connection, $tableName);
     $d = mysqli_real_escape_string($connection, $dbName);
