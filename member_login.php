@@ -40,6 +40,9 @@
         <input type="submit" value="登录">
     </form>
 
+    <!-- 注册按钮 -->
+    <p>还没有账户？ <a href="register.php">点击这里注册</a></p>
+
     <?php
     // 处理登录表单
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
