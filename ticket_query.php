@@ -2,38 +2,7 @@
 <html>
 <head>
     <title>票查询</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .menu {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-        }
-        .menu a {
-            color: white;
-            margin: 10px;
-            text-decoration: none;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+    <link rel="stylesheet" href="styles.css">
     </style>
 </head>
 <body>
