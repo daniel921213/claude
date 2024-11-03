@@ -1,50 +1,10 @@
 <?php include "../inc/dbinfo.inc"; ?>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Booking System</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        .menu {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            text-align: left;
-        }
-        .menu a {
-            color: white;
-            margin: 10px;
-            text-decoration: none;
-        }
-        .menu a:hover {
-            text-decoration: underline;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .form-container {
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -60,17 +20,14 @@
 </div>
 
 <?php
-  /* Connect to MySQL and select the database. */
   $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
 
   if (mysqli_connect_errno()) echo "Failed to connect to MySQL: " . mysqli_connect_error();
 
   $database = mysqli_select_db($connection, DB_DATABASE);
 
-  /* Ensure that the BOOKINGS table exists. */
   VerifyBookingsTable($connection, DB_DATABASE);
 
-  /* If input fields are populated, add a row to the BOOKINGS table. */
   $customer_name = htmlentities($_POST['NAME']);
   $customer_address = htmlentities($_POST['ADDRESS']);
 
@@ -102,8 +59,8 @@
     </form>
 </div>
 
-<!-- Display table data. -->
-<table>
+<!-- Display table data -->
+<table class="data-table">
     <tr>
         <th>ID</th>
         <th>NAME</th>
@@ -124,7 +81,6 @@ while($query_data = mysqli_fetch_row($result)) {
 
 </table>
 
-<!-- Clean up. -->
 <?php
   mysqli_free_result($result);
   mysqli_close($connection);
@@ -135,7 +91,6 @@ while($query_data = mysqli_fetch_row($result)) {
 
 <?php
 
-/* Add a booking to the table. */
 function AddBooking($connection, $name, $address) {
     $n = mysqli_real_escape_string($connection, $name);
     $a = mysqli_real_escape_string($connection, $address);
@@ -145,7 +100,6 @@ function AddBooking($connection, $name, $address) {
     if(!mysqli_query($connection, $query)) echo("<p>Error adding booking data.</p>");
 }
 
-/* Check whether the BOOKINGS table exists and, if not, create it. */
 function VerifyBookingsTable($connection, $dbName) {
     if(!TableExists("BOOKINGS", $connection, $dbName)) {
         $query = "CREATE TABLE BOOKINGS (
@@ -158,7 +112,6 @@ function VerifyBookingsTable($connection, $dbName) {
     }
 }
 
-/* Check for the existence of a table. */
 function TableExists($tableName, $connection, $dbName) {
     $t = mysqli_real_escape_string($connection, $tableName);
     $d = mysqli_real_escape_string($connection, $dbName);
