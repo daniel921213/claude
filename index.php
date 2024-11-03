@@ -18,6 +18,14 @@
     <a href="member_modify.php">會員修改</a>
     <a href="booking.php">訂票</a>
 </div>
+<!-- 显示用户名 -->
+<div style="text-align: right; padding: 10px;">
+    <?php
+    if (isset($_SESSION['username'])) {
+        echo "欢迎, " . htmlspecialchars($_SESSION['username']);
+    }
+    ?>
+</div>
 
 <!-- 資訊區域 -->
 <div class="info-section">
