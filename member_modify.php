@@ -3,6 +3,11 @@
 <head>
     <title>订单更改</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        function showAlert(message) {
+            alert(message);
+        }
+    </script>
 </head>
 <body>
 
@@ -25,7 +30,7 @@ if (mysqli_connect_errno()) echo "连接 MySQL 失败: " . mysqli_connect_error(
 
 $database = mysqli_select_db($connection, DB_DATABASE);
 
-// 如果输入字段被填充，则根据用户名查询预订.
+// 处理表单提交
 $customer_name = htmlentities($_POST['NAME'] ?? '');
 $new_address = htmlentities($_POST['NEW_ADDRESS'] ?? '');
 $action = $_POST['ACTION'] ?? '';
@@ -39,12 +44,12 @@ if ($action === 'update' && !empty($customer_name) && !empty($new_address)) {
     $message = "预订已删除！";
 }
 
-// 查询用户的预订信息
-$reservations = mysqli_query($connection, "SELECT * FROM BOOKINGS WHERE NAME = '$customer_name'");
+// 清理
+mysqli_close($connection);
 ?>
 
 <div class="form-container">
-    <form action="<?php echo $_SERVER['SCRIPT_NAME'] ?>" method="POST">
+    <form action="<?php echo $_SERVER['SCRIPT_NAME'] ?>" method="POST" onsubmit="showAlert('<?php echo $message; ?>');">
         <label for="name">姓名:</label>
         <input type="text" name="NAME" required maxlength="45">
         <br><br>
@@ -57,33 +62,6 @@ $reservations = mysqli_query($connection, "SELECT * FROM BOOKINGS WHERE NAME = '
         <input type="submit" value="提交">
     </form>
 </div>
-
-<!-- 显示查询到的预订信息 -->
-<h2>预订信息</h2>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>姓名</th>
-        <th>地址</th>
-    </tr>
-
-<?php
-while($query_data = mysqli_fetch_row($reservations)) {
-    echo "<tr>";
-    echo "<td>", $query_data[0], "</td>",
-         "<td>", $query_data[1], "</td>",
-         "<td>", $query_data[2], "</td>";
-    echo "</tr>";
-}
-?>
-
-</table>
-
-<!-- 清理. -->
-<?php
-mysqli_free_result($reservations);
-mysqli_close($connection);
-?>
 
 </body>
 </html>
