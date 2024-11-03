@@ -27,37 +27,7 @@
   $database = mysqli_select_db($connection, DB_DATABASE);
 
   VerifyBookingsTable($connection, DB_DATABASE);
-
-  $customer_name = htmlentities($_POST['NAME']);
-  $customer_address = htmlentities($_POST['ADDRESS']);
-
-  if (strlen($customer_name) || strlen($customer_address)) {
-    AddBooking($connection, $customer_name, $customer_address);
-  }
 ?>
-
-<!-- Input form -->
-<div class="form-container">
-    <form action="<?php echo $_SERVER['SCRIPT_NAME'] ?>" method="POST">
-        <table>
-            <tr>
-                <td>NAME</td>
-                <td>ADDRESS</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="text" name="NAME" maxlength="45" size="30" />
-                </td>
-                <td>
-                    <input type="text" name="ADDRESS" maxlength="90" size="60" />
-                </td>
-                <td>
-                    <input type="submit" value="Book Ticket" />
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>
 
 <!-- Display table data -->
 <table class="data-table">
@@ -90,16 +60,6 @@ while($query_data = mysqli_fetch_row($result)) {
 </html>
 
 <?php
-
-function AddBooking($connection, $name, $address) {
-    $n = mysqli_real_escape_string($connection, $name);
-    $a = mysqli_real_escape_string($connection, $address);
-
-    $query = "INSERT INTO BOOKINGS (NAME, ADDRESS) VALUES ('$n', '$a');";
-
-    if(!mysqli_query($connection, $query)) echo("<p>Error adding booking data.</p>");
-}
-
 function VerifyBookingsTable($connection, $dbName) {
     if(!TableExists("BOOKINGS", $connection, $dbName)) {
         $query = "CREATE TABLE BOOKINGS (
