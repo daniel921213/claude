@@ -29,11 +29,14 @@ $database = mysqli_select_db($connection, DB_DATABASE);
 $customer_name = htmlentities($_POST['NAME'] ?? '');
 $new_address = htmlentities($_POST['NEW_ADDRESS'] ?? '');
 $action = $_POST['ACTION'] ?? '';
+$message = '';
 
 if ($action === 'update' && !empty($customer_name) && !empty($new_address)) {
     UpdateBooking($connection, $customer_name, $new_address);
+    $message = "地址更新成功！";
 } elseif ($action === 'delete' && !empty($customer_name)) {
     DeleteBooking($connection, $customer_name);
+    $message = "预订已删除！";
 }
 
 // 查询用户的预订信息
