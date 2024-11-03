@@ -1,28 +1,13 @@
-<?php include "../inc/dbinfo.inc"; ?>
-<html>
+<?php include "../inc/dbinfo.inc"; session_start(); ?>
+<html lang="zh">
 <head>
     <title>会员登录</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function showAlert() {
+            alert("登录成功！");
         }
-        .menu {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-        }
-        .menu a {
-            color: white;
-            margin: 10px;
-            text-decoration: none;
-        }
-        .form-container {
-            margin-top: 20px;
-        }
-    </style>
+    </script>
 </head>
 <body>
 
@@ -37,6 +22,15 @@
     <a href="booking.php">订票</a>
 </div>
 
+<!-- 显示用户名 -->
+<div style="text-align: right; padding: 10px;">
+    <?php
+    if (isset($_SESSION['username'])) {
+        echo "欢迎, " . htmlspecialchars($_SESSION['username']);
+    }
+    ?>
+</div>
+
 <div class="form-container">
     <form action="member_login.php" method="POST">
         <label for="username">用户名:</label>
@@ -45,6 +39,46 @@
         <input type="password" id="password" name="password" required><br><br>
         <input type="submit" value="登录">
     </form>
+
+    <?php
+    // 处理登录表单
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // 连接数据库
+        $connection = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD);
+        
+        if (mysqli_connect_errno()) {
+            echo "连接 MySQL 失败: " . mysqli_connect_error();
+            exit();
+        }
+
+        $database = mysqli_select_db($connection, DB_DATABASE);
+
+        // 获取表单数据并进行处理
+        $username = mysqli_real_escape_string($connection, $_POST['username']);
+        $password = $_POST['password'];
+
+        // 查询用户
+        $query = "SELECT password FROM USERS WHERE username='$username'";
+        $result = mysqli_query($connection, $query);
+        
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
+            // 验证密码
+            if (password_verify($password, $row['password'])) {
+                // 登录成功，设置 session 并弹出提示
+                $_SESSION['username'] = $username;
+                echo "<script>showAlert();</script>";
+            } else {
+                echo "<p>密码错误。</p>";
+            }
+        } else {
+            echo "<p>用户名不存在。</p>";
+        }
+
+        // 关闭数据库连接
+        mysqli_close($connection);
+    }
+    ?>
 </div>
 
 </body>
