@@ -5,7 +5,9 @@
     <link rel="stylesheet" href="styles.css">
     <script>
         function showAlert(message) {
-            alert(message);
+            if (message) {
+                alert(message);
+            }
         }
     </script>
 </head>
@@ -49,7 +51,7 @@ mysqli_close($connection);
 ?>
 
 <div class="form-container">
-    <form action="<?php echo $_SERVER['SCRIPT_NAME'] ?>" method="POST" onsubmit="showAlert('<?php echo $message; ?>');">
+    <form action="<?php echo $_SERVER['SCRIPT_NAME'] ?>" method="POST" onsubmit="showAlert('<?php echo addslashes($message); ?>');">
         <label for="name">姓名:</label>
         <input type="text" name="NAME" required maxlength="45">
         <br><br>
@@ -62,6 +64,7 @@ mysqli_close($connection);
         <input type="submit" value="提交">
     </form>
 </div>
+
 <script>
     // 直接调用 showAlert 函数，确保在页面加载后显示消息
     showAlert("<?php echo addslashes($message); ?>");
