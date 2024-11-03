@@ -62,6 +62,10 @@ mysqli_close($connection);
         <input type="submit" value="提交">
     </form>
 </div>
+<script>
+    // 直接调用 showAlert 函数，确保在页面加载后显示消息
+    showAlert("<?php echo addslashes($message); ?>");
+</script>
 
 </body>
 </html>
